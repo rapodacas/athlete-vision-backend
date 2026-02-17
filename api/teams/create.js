@@ -1,5 +1,4 @@
+import { withCors } from '../../backend/api/_cors.js';
 import handler from '../../server/handlers/create-teams.js';
 
-export default async function teamsCreate(req, res) {
-  return handler(req, res);
-}
+export default withCors(handler);

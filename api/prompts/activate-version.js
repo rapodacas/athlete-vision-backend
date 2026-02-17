@@ -1,6 +1,5 @@
 // api/prompts/activate-version.js
+import { withCors } from '../../backend/api/_cors.js';
 import handler from '../../server/handlers/prompts-activate-version.js';
 
-export default async function promptsActivateVersion(req, res) {
-  return handler(req, res);
-}
+export default withCors(handler);

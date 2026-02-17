@@ -1,5 +1,4 @@
+import { withCors } from '../../backend/api/_cors.js';
 import handler from '../../server/handlers/load-players.js';
 
-export default async function playersLoad(req, res) {
-  return handler(req, res);
-}
+export default withCors(handler);

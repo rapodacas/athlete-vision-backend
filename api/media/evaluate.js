@@ -1,5 +1,4 @@
+import { withCors } from '../../backend/api/_cors.js';
 import handler from '../../server/handlers/evaluate-media.js';
 
-export default async function mediaEvaluate(req, res) {
-  return handler(req, res);
-}
+export default withCors(handler);
