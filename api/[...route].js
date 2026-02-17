@@ -1,4 +1,4 @@
-// backend/api/[...route].js
+// api/[...route].js
 // Unified router for all endpoints — dispatches by path and method
 // Runs as ONE Vercel function
 import { withCors } from "./_cors.js";
