@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { versions } = await getPromptVersions(category);
+    const versions = await getPromptVersions(category);
     return res.status(200).json(versions);
   } catch (err) {
     console.error("list-versions error:", err);
