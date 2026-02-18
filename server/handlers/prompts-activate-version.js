@@ -5,11 +5,19 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-  
-  // Parse query params manually
-  const url = new URL(req.url, `http://${req.headers.host}`);
-  const category = url.searchParams.get("category");
-  const version = url.searchParams.get("version");
+
+  let body = {};
+  try {
+    const raw = await new Promise((resolve) => {
+      let data = "";
+      req.on("data", (chunk) => (data += chunk));
+      req.on("end", () => resolve(data));
+    });
+    body = JSON.parse(raw || "{}");
+  } catch (e) {}
+
+  const category = body.category;
+  const version = body.version;
 
   if (!category || version == null) {
     return res.status(400).json({ error: "Missing category or version" });
@@ -22,4 +30,4 @@ export default async function handler(req, res) {
     console.error("activate-version error:", err);
     return res.status(500).json({ error: err.message });
   }
-};
+}
