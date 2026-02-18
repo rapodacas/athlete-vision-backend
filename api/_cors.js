@@ -4,7 +4,7 @@ export function withCors(handler) {
   return async (req, res) => {
     console.log("🛡️ CORS wrapper invoked:", req.method, req.url);
 
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", CLIENT_HOST || "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.setHeader(
       "Access-Control-Allow-Headers",
