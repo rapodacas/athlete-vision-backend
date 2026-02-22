@@ -12,13 +12,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const edgeUrl = `${process.env.SUPABASE_URL}/functions/v1/trim-video`;
+    const flyUrl = "https://trim-video-service.fly.dev/";
 
-    const edgeRes = await fetch(edgeUrl, {
+    const flyRes = await fetch(flyUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
+        Authorization: `Bearer ${process.env.FLY_API_KEY}`
       },
       body: JSON.stringify({
         supabasePath,
@@ -29,9 +29,9 @@ export default async function handler(req, res) {
       })
     });
 
-    const data = await edgeRes.json();
+    const data = await flyRes.json();
 
-    return res.status(edgeRes.status).json(data);
+    return res.status(flyRes.status).json(data);
 
   } catch (err) {
     console.error("trim-video error", err);
