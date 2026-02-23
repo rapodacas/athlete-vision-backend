@@ -1,4 +1,4 @@
-// backend/api/_cors.js
+// api/_cors.js
 
 export function withCors(handler) {
   return async (req, res) => {

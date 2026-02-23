@@ -1,4 +1,4 @@
-// backend/handlers/evaluate-media.js
+// handlers/evaluate-media.js
 import evaluateSingleEvent from "../../lib/evaluation.js";
 
 export default async function handler(req, res) {

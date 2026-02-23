@@ -1,4 +1,4 @@
-// backend/handlers/test-evaluate-prompt.js
+// handlers/test-evaluate-prompt.js
 import supabase from "../../lib/supabase.js";
 import { callModel } from "../../lib/providers/index.js";
 import { extractFramesFromUrl } from "../../lib/ffmpeg.js";

@@ -1,4 +1,4 @@
-// backend/handlers/create-teams.js
+// server/handlers/create-teams.js
 import supabase from "../../lib/supabase.js";
 
 export default async function handler(req, res) {

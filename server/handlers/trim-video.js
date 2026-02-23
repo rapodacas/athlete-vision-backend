@@ -1,4 +1,4 @@
-// backend/handlers/trim-video.js
+// handlers/trim-video.js
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

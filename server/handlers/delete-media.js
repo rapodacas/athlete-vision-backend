@@ -1,4 +1,4 @@
-// backend/handlers/delete-media.js
+// handlers/delete-media.js
 import supabase from "../../lib/supabase.js";
 
 export default async function handler(req, res) {

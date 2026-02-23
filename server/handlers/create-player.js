@@ -1,4 +1,4 @@
-// backend/handlers/create-player.js
+// server/handlers/create-player.js
 import supabase from "../../lib/supabase.js";
 
 export default async function handler(req, res) {
