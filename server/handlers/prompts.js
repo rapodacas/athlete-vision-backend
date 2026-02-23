@@ -1,34 +1,88 @@
-// backend/handlers/prompts.js
-import supabase from "../../lib/supabase.js";
+// server/handlers/prompts.js
+import {
+  createPromptVersion,
+  activatePromptVersion,
+  rollbackPrompt,
+  getPromptVersions
+} from "../../lib/prompts/versioning.js";
 
 export default async function handler(req, res) {
-  const category = req.query.category;
+  // -----------------------------
+  // GET → list versions
+  // -----------------------------
+  if (req.method === "GET") {
+    const { action, category } = req.query || {};
 
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
+    if (action === "list") {
+      if (!category) {
+        return res.status(400).json({ error: "Missing category" });
+      }
+
+      try {
+        const versions = await getPromptVersions(category);
+        return res.status(200).json({ versions });
+      } catch (err) {
+        return res.status(500).json({ error: err.message });
+      }
+    }
+
+    return res.status(400).json({ error: "Unknown GET action" });
   }
 
-  if (!category) {
-    return res.status(400).json({ error: "Missing category" });
+  // -----------------------------
+  // POST → create/activate/rollback
+  // -----------------------------
+  if (req.method === "POST") {
+    let body = {};
+    try {
+      const raw = await new Promise(resolve => {
+        let d = "";
+        req.on("data", c => (d += c));
+        req.on("end", () => resolve(d));
+      });
+      body = JSON.parse(raw || "{}");
+    } catch {}
+
+    const {
+      category,
+      subcategories,
+      systemPrompt,
+      userPromptTemplate,
+      version,
+      action
+    } = req.body || {};
+
+    if (!action) return res.status(400).json({ error: "Missing action" });
+    if (!category) return res.status(400).json({ error: "Missing category" });
+    
+    try {
+      switch (action) {
+        case "create-version":
+          if (!subcategories || !systemPrompt || !userPromptTemplate) {
+            return res.status(400).json({ error: "Missing required fields" });
+          }
+          return res.status(200).json({
+            version: await createPromptVersion(body)
+          });
+
+        case "activate-version":
+          if (!version) return res.status(400).json({ error: "Missing version" });
+          await activatePromptVersion(category, version);
+          return res.status(200).json({ success: true });
+
+        case "rollback":
+          return res.status(200).json({
+            version: await rollbackPrompt(category)
+          });
+
+        default:
+          return res.status(400).json({ error: "Unknown POST action" });
+      }
+    } catch (err) {
+      console.log(`${action} error: ${err}`)
+      return res.status(500).json({ error: err.message });
+    }
   }
 
-  try {
-    const { data, error } = await supabase
-      .from("prompts")
-      .select("*")
-      .eq("category", category)
-      .order("version", { ascending: false });
-
-    if (error) throw error;
-
-    const active = data.find(v => v.is_active);
-
-    return res.status(200).json({
-      versions: data,
-      activeVersion: active?.version || null
-    });
-  } catch (err) {
-    console.error("GET /api/prompts error:", err);
-    return res.status(500).json({ error: "Failed to load prompts" });
-  }
-};
+  return res.status(405).json({ error: "Method not allowed" });
+}
